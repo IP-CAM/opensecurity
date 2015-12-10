@@ -19,18 +19,27 @@ Installation
 ***Next files will be REPLACED***
 
 /admin/controller/common/login.php
+
 /admin/view/template/common/login.tpl
+
 /catalog/controller/account/login.php
+
 /catalog/view/theme/default/template/account/login.tpl
 
-Next files will be added:
+***Next files will be added:***
 
 /admin/controller/module/opensecurity.php
+
 /admin/view/template/module/opensecurity.tpl
+
 /admin/language/english/module/opensecurity.php
+
 /admin/language/russian/module/opensecurity.php
+
 /system/library/opslib.php
+
 /catalog/language/english/module/opensecurity.php
+
 /catalog/language/russian/module/opensecurity.php
 
-If you found any bug, please contact me: http://openweb.tech/contacts/
+***If you found any bug, please contact me: http://openweb.tech/contacts/***
