@@ -49,6 +49,7 @@
 	      <div class="form-group">
 		<div class="col-sm-4"><label class="control-label"><?php echo $text_version ?></label></div>
 		<div class="col-sm-2"><span class="form-control"><?php echo $settings['opensec-version'] ?></span></div>
+		<input type="hidden" name="opensec-version" value="<?php echo $settings['opensec-version'] ?>">
 	      </div>
 	    </div>
 	    <!-- 1 col -->

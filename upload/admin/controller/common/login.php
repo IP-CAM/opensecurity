@@ -129,8 +129,16 @@ if ($this->validateIp())
 		$data['error_captcha'] = 0;
 		$data['text_captcha'] = $this->language->get('text_captcha');
 		$this->authLog();
+		$data['show_captcha'] = $this->ops->isCaptchaNeeded();
 		
 		$data['show_captcha'] = $this->ops->isCaptchaNeeded();
+		if ($this->request->server['HTTPS']) {
+			$server = $this->config->get('config_ssl');
+		} else {
+			$server = $this->config->get('config_url');
+		}
+		$data['base'] = $server;
+		
 		// opensecurity
 		
 		if (isset($this->error['warning'])) {

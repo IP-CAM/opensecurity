@@ -35,13 +35,13 @@
 <?php if($show_captcha) { ?>
               <div class="form-group">
 		<div class="col-md-6">
-		  <img src="/index.php?route=captcha/basic_captcha/captcha" alt="" />
+		  <img src="<?php echo $base ?>/index.php?route=captcha/basic_captcha/captcha" alt="" />
 		</div>
+		
 		<div class="col-md-6">
 		  <input type="text" name="input-captcha" id="input-captcha" class="form-control" placeholder="<?php echo $text_captcha ?>" />
 		</div>
 	      </div>
-              </div>
 <?php } ?>
               <div class="form-group">
                 <?php if ($forgotten) { ?>

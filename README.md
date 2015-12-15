@@ -26,6 +26,10 @@ Installation
 
 /catalog/view/theme/default/template/account/login.tpl
 
+/catalog/controller/checkout/login.php
+
+/catalog/view/theme/default/template/checkout/login.tpl
+
 ***Next files will be added:***
 
 /admin/controller/module/opensecurity.php
