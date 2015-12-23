@@ -5,8 +5,8 @@ $_['heading_title']     = 'Open Security';
 // Text
 $_['module_status']     	= 'Статус модуля';
 $_['captcha_status']    	= 'Статус капчи';
-$_['alert_email']		= 'Email для уведомлений';
-$_['captcha_logins_count']      = 'Количество неправельных логинов';
+$_['alert_email']		= 'Email';
+$_['captcha_logins_count']      = 'Количество логинов';
 $_['module_title']		= 'Open Security';
 $_['text_module']		= 'Модули';
 
@@ -14,8 +14,8 @@ $_['text_enabled']      	= 'Включён';
 $_['text_disabled']     	= 'Выключен';
 $_['text_captcha']       	= 'Капча';
 $_['text_wrong_captcha']	= 'Пожалуйста, введите правильную капчу';
-$_['text_auto_block_ip']	= 'Автоматически блокировать ip';
-$_['text_send_emails']		= 'Посылать уведомления на e-mail';
+$_['text_auto_block_ip']	= 'Блокировать ip';
+$_['text_send_emails']		= 'Уведомления';
 $_['text_ip_ban']		= 'Ваш ip адрес заблокирован';
 $_['text_last_messages']	= 'Последние сообщения';
 $_['text_Date_Time']		= 'Дата/Время';
