@@ -58,6 +58,8 @@ class ControllerCommonLogin extends Controller {
 		
 		if( isset($this->ops->settings['ip_baned']) ) return 1;
 		
+		if( $this->tokenerror == 1 ) return 1;
+		
 		$rdate = time();
 		$ip = $_SERVER['REMOTE_ADDR'];
 		$processed = 0;
@@ -90,6 +92,7 @@ class ControllerCommonLogin extends Controller {
 		//opensecurity module
 		$this->load->language('module/opensecurity');
 		$this->ops = new opsLib( $this, $this->config, $this->language );
+		$this->tokenerror = 0;
 		//opensecurity module
 		
 		$this->load->language('common/login');
@@ -124,6 +127,7 @@ if ($this->validateIp())
 
 		if ((isset($this->session->data['token']) && !isset($this->request->get['token'])) || ((isset($this->request->get['token']) && (isset($this->session->data['token']) && ($this->request->get['token'] != $this->session->data['token']))))) {
 			$this->error['warning'] = $this->language->get('error_token');
+			$this->tokenerror = 1;
 		}
 		// opensecurity
 		$data['error_captcha'] = 0;
