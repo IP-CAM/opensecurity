@@ -1,7 +1,5 @@
 <?php
 
-$login_error =array();
-
 include DIR_SYSTEM.'library/opslib.php';
 
 class ControllerCheckoutLogin extends Controller {
@@ -90,15 +88,15 @@ class ControllerCheckoutLogin extends Controller {
 		
 		if ($result->rows[0]['cnt'] >= $this->ops->settings['opensec-autoblockipcount']) $this->ops->addIpBan();
 	}
-	
 
 	public function index() {
 		$this->load->language('checkout/checkout');
+
 		//opensecurity module
 		$this->load->language('module/opensecurity');
 		$this->ops = new opsLib( $this, $this->config, $this->language );
 		//opensecurity module
-
+		
 		$data['text_checkout_account'] = $this->language->get('text_checkout_account');
 		$data['text_checkout_payment_address'] = $this->language->get('text_checkout_payment_address');
 		$data['text_new_customer'] = $this->language->get('text_new_customer');
@@ -136,21 +134,14 @@ class ControllerCheckoutLogin extends Controller {
 			$server = $this->config->get('config_url');
 		}
 		$data['base'] = $server;
-		
 		// opensecurity
 		
-		$data['forgotten'] = $this->url->link('account/forgotten', '', 'SSL');
+		$data['forgotten'] = $this->url->link('account/forgotten', '', true);
 
-		if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/checkout/login.tpl')) {
-			$this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/checkout/login.tpl', $data));
-		} else {
-			$this->response->setOutput($this->load->view('default/template/checkout/login.tpl', $data));
-		}
+		$this->response->setOutput($this->load->view('checkout/login', $data));
 	}
 
 	public function save() {
-                global $login_error;
-                
 		$this->load->language('checkout/checkout');
 		
 		// opensecurity
@@ -158,14 +149,14 @@ class ControllerCheckoutLogin extends Controller {
                 $this->ops = new opsLib( $this, $this->config, $this->language );
                 $login_error['warning'] = '';
                 $login_error['captcha_error'] = 0;
-                
                 // opensecurity
                 
 		$json = array();
 
 		if ($this->customer->isLogged()) {
-			$json['redirect'] = $this->url->link('checkout/checkout', '', 'SSL');
+			$json['redirect'] = $this->url->link('checkout/checkout', '', true);
 		}
+
 		if ((!$this->cart->hasProducts() && empty($this->session->data['vouchers'])) || (!$this->cart->hasStock() && !$this->config->get('config_stock_checkout'))) {
 			$json['redirect'] = $this->url->link('checkout/cart');
 		}
@@ -186,12 +177,11 @@ class ControllerCheckoutLogin extends Controller {
 			if ($customer_info && !$customer_info['approved']) {
 				$json['error']['warning'] = $this->language->get('error_approved');
 			}
-			
 
 			if (!isset($json['error'])) {
-			
+// opensecurity
 if ($this->validateIp())
-	if ($this->validateCaptcha())
+	if ($this->validateCaptcha())// opensecurity
 				if (!$this->customer->login($this->request->post['email'], $this->request->post['password'])) {
 					$json['error']['warning'] = $this->language->get('error_login');
 
@@ -204,16 +194,11 @@ if ($this->validateIp())
 		
                 // opensecurity
                 $this->authLog($json);
-                
                 if($login_error['warning'] != '') $json['error']['warning'] = $login_error['warning'];
-                
                 if($this->ops->isCaptchaNeeded() && isset($json['error']['warning'])) $json['redirect'] = $this->url->link('checkout/checkout', '', 'SSL');
                 // opensecurity
                 
 		if (!$json) {
-			// Trigger customer pre login event
-			$this->event->trigger('pre.customer.login');
-
 			// Unset guest
 			unset($this->session->data['guest']);
 
@@ -249,10 +234,7 @@ if ($this->validateIp())
 
 			$this->model_account_activity->addActivity('login', $activity_data);
 
-			// Trigger customer post login event
-			$this->event->trigger('post.customer.login');
-
-			$json['redirect'] = $this->url->link('checkout/checkout', '', 'SSL');
+			$json['redirect'] = $this->url->link('checkout/checkout', '', true);
 		}
 
 		$this->response->addHeader('Content-Type: application/json');

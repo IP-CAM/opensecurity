@@ -86,32 +86,31 @@ class ControllerCommonLogin extends Controller {
 		
 		if ($result->rows[0]['cnt'] >= $this->ops->settings['opensec-autoblockipcount']) $this->ops->addIpBan();
 	}
-	
-	public function index() {
 
+	public function index() {
+		$this->load->language('common/login');
+		
 		//opensecurity module
 		$this->load->language('module/opensecurity');
 		$this->ops = new opsLib( $this, $this->config, $this->language );
 		$this->tokenerror = 0;
 		//opensecurity module
 		
-		$this->load->language('common/login');
-		
 		$this->document->setTitle($this->language->get('heading_title'));
 
 		if ($this->user->isLogged() && isset($this->request->get['token']) && ($this->request->get['token'] == $this->session->data['token'])) {
-			$this->response->redirect($this->url->link('common/dashboard', 'token=' . $this->session->data['token'], 'SSL'));
+			$this->response->redirect($this->url->link('common/dashboard', 'token=' . $this->session->data['token'], true));
 		}
 
 if ($this->validateIp())
 	if ($this->validateCaptcha())
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
 			$this->session->data['token'] = token(32);
-
-			if (isset($this->request->post['redirect']) && (strpos($this->request->post['redirect'], HTTP_SERVER) === 0 || strpos($this->request->post['redirect'], HTTPS_SERVER) === 0 )) {
+			
+			if (isset($this->request->post['redirect']) && (strpos($this->request->post['redirect'], HTTP_SERVER) === 0 || strpos($this->request->post['redirect'], HTTPS_SERVER) === 0)) {
 				$this->response->redirect($this->request->post['redirect'] . '&token=' . $this->session->data['token']);
 			} else {
-				$this->response->redirect($this->url->link('common/dashboard', 'token=' . $this->session->data['token'], 'SSL'));
+				$this->response->redirect($this->url->link('common/dashboard', 'token=' . $this->session->data['token'], true));
 			}
 		}
 
@@ -127,8 +126,8 @@ if ($this->validateIp())
 
 		if ((isset($this->session->data['token']) && !isset($this->request->get['token'])) || ((isset($this->request->get['token']) && (isset($this->session->data['token']) && ($this->request->get['token'] != $this->session->data['token']))))) {
 			$this->error['warning'] = $this->language->get('error_token');
-			$this->tokenerror = 1;
 		}
+		
 		// opensecurity
 		$data['error_captcha'] = 0;
 		$data['text_captcha'] = $this->language->get('text_captcha');
@@ -146,7 +145,6 @@ if ($this->validateIp())
 		// opensecurity
 		
 		if (isset($this->error['warning'])) {
-			
 			$data['error_warning'] = $this->error['warning'];
 		} else {
 			$data['error_warning'] = '';
@@ -160,7 +158,7 @@ if ($this->validateIp())
 			$data['success'] = '';
 		}
 
-		$data['action'] = $this->url->link('common/login', '', 'SSL');
+		$data['action'] = $this->url->link('common/login', '', true);
 
 		if (isset($this->request->post['username'])) {
 			$data['username'] = $this->request->post['username'];
@@ -186,13 +184,13 @@ if ($this->validateIp())
 				$url .= http_build_query($this->request->get);
 			}
 
-			$data['redirect'] = $this->url->link($route, $url, 'SSL');
+			$data['redirect'] = $this->url->link($route, $url, true);
 		} else {
 			$data['redirect'] = '';
 		}
 
 		if ($this->config->get('config_password')) {
-			$data['forgotten'] = $this->url->link('common/forgotten', '', 'SSL');
+			$data['forgotten'] = $this->url->link('common/forgotten', '', true);
 		} else {
 			$data['forgotten'] = '';
 		}
@@ -200,7 +198,7 @@ if ($this->validateIp())
 		$data['header'] = $this->load->controller('common/header');
 		$data['footer'] = $this->load->controller('common/footer');
 
-		$this->response->setOutput($this->load->view('common/login.tpl', $data));
+		$this->response->setOutput($this->load->view('common/login', $data));
 	}
 
 	protected function validate() {
@@ -209,38 +207,5 @@ if ($this->validateIp())
 		}
 
 		return !$this->error;
-	}
-
-	public function check() {
-		$route = isset($this->request->get['route']) ? $this->request->get['route'] : '';
-
-		$ignore = array(
-			'common/login',
-			'common/forgotten',
-			'common/reset'
-		);
-
-		if (!$this->user->isLogged() && !in_array($route, $ignore)) {
-			return new Action('common/login');
-		}
-
-		if (isset($this->request->get['route'])) {
-			$ignore = array(
-				'common/login',
-				'common/logout',
-				'common/forgotten',
-				'common/reset',
-				'error/not_found',
-				'error/permission'
-			);
-
-			if (!in_array($route, $ignore) && (!isset($this->request->get['token']) || !isset($this->session->data['token']) || ($this->request->get['token'] != $this->session->data['token']))) {
-				return new Action('common/login');
-			}
-		} else {
-			if (!isset($this->request->get['token']) || !isset($this->session->data['token']) || ($this->request->get['token'] != $this->session->data['token'])) {
-				return new Action('common/login');
-			}
-		}
 	}
 }
